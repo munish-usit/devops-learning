@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+
+    stages {
+        stage("clean up") {
+            steps {
+				echo 'Clean Up'
+                deleteDir()
+            }
+        }
+        stage("clone") {
+            steps {
+                echo 'CLONE STEP'
+                sh "git clone https://github.com/munish-usit/devops-learning.git"
+            }
+        }
+        
+        stage("build") {
+            steps {
+                echo 'BUILD STEP'
+                dir("devops-learning/jenkins-tutorial") {
+                    sh "mvn clean install"
+                }
+            }
+        }
+        
+        stage("test") {
+            steps {
+                echo 'TEST STEP'
+                dir("devops-learning/jenkins-tutorial") {
+                    sh "mvn test"
+                }
+            }
+        }
+    }
+}
