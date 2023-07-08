@@ -22,6 +22,7 @@ public class StatusController {
 		ObjectNode childNode = mapper.createObjectNode();
 		childNode.put("status", "MONITORING");
 		childNode.put("version", "1.0.0");
+		childNode.put("purpose", "DEV");
 		rootNode.set("health", childNode);
 		
 		String jsonString = mapper.writeValueAsString(rootNode);
