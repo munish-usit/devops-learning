@@ -6,7 +6,7 @@ pipeline {
         stage("build") {
             steps {
                 echo 'BUILD STEP'
-                dir("devops-learning/jenkins-tutorial") {
+                dir("jenkins-tutorial") {
                     sh "mvn clean install"
                 }
             }
@@ -15,7 +15,7 @@ pipeline {
         stage("test") {
             steps {
                 echo 'TEST STEP'
-                dir("devops-learning/jenkins-tutorial") {
+                dir("jenkins-tutorial") {
                     sh "mvn test"
                 }
             }
