@@ -1,0 +1,24 @@
+pipeline {
+    agent any
+
+    stages {
+        
+        stage("build") {
+            steps {
+                echo 'BUILD STEP'
+                dir("devops-learning/jenkins-tutorial") {
+                    sh "mvn clean install"
+                }
+            }
+        }
+        
+        stage("test") {
+            steps {
+                echo 'TEST STEP'
+                dir("devops-learning/jenkins-tutorial") {
+                    sh "mvn test"
+                }
+            }
+        }
+    }
+}
