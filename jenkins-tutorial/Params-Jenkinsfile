@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+    
+    parameters {
+        string(defaultValue: "main", description: 'Branch Name', name: 'branchName')
+        choice(choices: ['DEV','TEST','UAT'], description: 'Deploy Environment', name: 'deployEnv')
+        booleanParam(defaultValue: true, description: 'Deployment Confirmation', name: 'userFlag')
+    }
+    stages {
+        stage('Start') {
+            steps {
+                echo 'Parameterized Pipeline Starts'
+            }
+        }
+        stage("Branch") {
+            steps {
+                echo "Branch Name : ${params.branchName}"
+            }
+        }
+        stage("Environment") {
+            steps {
+                echo "Environment Name : ${params.deployEnv}"
+            }
+        }
+        stage("Deployment Confirmation") {
+            steps {
+                echo "Deployment Confirmation : ${params.userFlag}"
+            }
+        }
+    }
+}
