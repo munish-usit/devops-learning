@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+        stage("clean up") {
+            steps {
+                deleteDir()
+            }
+        }
+        stage("clone") {
+            steps {
+                echo 'CLONE STEP'
+                sh "git clone https://github.com/jenkins-docs/simple-java-maven-app.git"
+            }
+        }
+        
+        stage("build") {
+            steps {
+                echo 'BUILD STEP'
+                dir("simple-java-maven-app") {
+                    sh "mvn clean install"
+                }
+            }
+        }
+        
+        stage("test") {
+            steps {
+                echo 'TEST STEP'
+                dir("simple-java-maven-app") {
+                    sh "mvn test"
+                }
+            }
+        }
+    }
+}

@@ -32,5 +32,25 @@ pipeline {
                 }
             }
         }
+		
+		stage ('Sonar Qube Scanner') {
+            steps {
+                 echo 'SONAR SCANNER'
+                 dir("devops-learning/jenkins-tutorial") {
+                   withSonarQubeEnv(installationName: 'sonar-qube', credentialsId: 'generic-token') {
+                        sh 'mvn clean package sonar:sonar'
+                    }
+                 }
+            }
+        }
+        
+        stage("Quality Gate") {
+            steps {
+              echo 'QUALITY GATE'
+              timeout(time: 1, unit: 'HOURS') {
+                waitForQualityGate abortPipeline: true
+              }
+            }
+        }
     }
 }

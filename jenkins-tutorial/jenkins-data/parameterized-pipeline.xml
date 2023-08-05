@@ -1,0 +1,81 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@1316.vd2290d3341a_f">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2141.v5402e818a_779"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2141.v5402e818a_779">
+      <jobProperties/>
+      <triggers/>
+      <parameters>
+        <string>userFlag</string>
+        <string>branchName</string>
+        <string>deployEnv</string>
+      </parameters>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description>Parameterized pipeline</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>branchName</name>
+          <description>Branch Name</description>
+          <defaultValue>main</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>deployEnv</name>
+          <description>Deploy Environment</description>
+          <choices>
+            <string>DEV</string>
+            <string>TEST</string>
+            <string>UAT</string>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>userFlag</name>
+          <description>Deployment Confirmation</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3697.vb_470e454c232">
+    <script>pipeline {
+    agent any
+    
+    parameters {
+        string(defaultValue: &quot;main&quot;, description: &apos;Branch Name&apos;, name: &apos;branchName&apos;)
+        choice(choices: [&apos;DEV&apos;,&apos;TEST&apos;,&apos;UAT&apos;], description: &apos;Deploy Environment&apos;, name: &apos;deployEnv&apos;)
+        booleanParam(defaultValue: true, description: &apos;Deployment Confirmation&apos;, name: &apos;userFlag&apos;)
+    }
+    stages {
+        stage(&apos;Start&apos;) {
+            steps {
+                echo &apos;Parameterized Pipeline Starts&apos;
+            }
+        }
+        stage(&quot;Branch&quot;) {
+            steps {
+                echo &quot;Branch Name : ${params.branchName}&quot;
+            }
+        }
+        stage(&quot;Environment&quot;) {
+            steps {
+                echo &quot;Environment Name : ${params.deployEnv}&quot;
+            }
+        }
+        stage(&quot;Deployment Confirmation&quot;) {
+            steps {
+                echo &quot;Deployment Confirmation : ${params.userFlag}&quot;
+            }
+        }
+    }
+}
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

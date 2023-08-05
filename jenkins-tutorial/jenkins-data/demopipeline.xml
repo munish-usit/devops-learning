@@ -1,0 +1,81 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@1316.vd2290d3341a_f">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2141.v5402e818a_779"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2141.v5402e818a_779">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description>Git hub and Maven Pipeline</description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3697.vb_470e454c232">
+    <script>pipeline {
+    agent any
+
+    stages {
+        stage(&apos;Hello&apos;) {
+            steps {
+                echo &apos;Hello World&apos;
+            }
+        }
+        stage(&quot;clean up&quot;) {
+            steps {
+                deleteDir()
+            }
+        }
+        stage(&quot;clone&quot;) {
+            steps {
+                echo &apos;CLONE STEP&apos;
+                sh &quot;git clone https://github.com/munish-usit/devops-learning.git&quot;
+            }
+        }
+        
+        stage(&quot;build&quot;) {
+            steps {
+                echo &apos;BUILD STEP&apos;
+                dir(&quot;devops-learning/jenkins-tutorial&quot;) {
+                    sh &quot;mvn clean install&quot;
+                }
+            }
+        }
+        
+        stage(&quot;test&quot;) {
+            steps {
+                echo &apos;TEST STEP&apos;
+                dir(&quot;devops-learning/jenkins-tutorial&quot;) {
+                    sh &quot;mvn test&quot;
+                }
+            }
+        }
+        
+        stage (&apos;Sonar Qube Scanner&apos;) {
+            steps {
+                 echo &apos;SONAR SCANNER&apos;
+                 dir(&quot;devops-learning/jenkins-tutorial&quot;) {
+                   withSonarQubeEnv(installationName: &apos;sonar-qube&apos;, credentialsId: &apos;generic-token&apos;) {
+                        sh &apos;mvn clean package sonar:sonar&apos;
+                    }
+                 }
+            }
+        }
+        
+        stage(&quot;Quality Gate&quot;) {
+            steps {
+              echo &apos;QUALITY GATE&apos;
+              timeout(time: 1, unit: &apos;HOURS&apos;) {
+                waitForQualityGate abortPipeline: true
+              }
+            }
+        }
+    }
+}
+</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>
