@@ -1,18 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: httpd-frontend
+  name: kube-deployment
+  labels:
+    app: status
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: httpd-pod
+      app: status-pods
   template:
     metadata:
-      name: http-pods
       labels:
-        app: httpd-pod
+        app: status-pods
     spec:
+      volumes:
+        - name: status-volume
+          configMap:
+            name: college-configmap
       containers:
-        - name: http-container
-          image: httpd:2.4-alpine
+        - name: status-container
+          image: kube-status:latest
+          imagePullPolicy: Never   # this is done so that image is fetched locally
+          env: 
+          - name: SPRING_PROFILES_ACTIVE
+            value : "prod2"
+          volumeMounts:
+            - name: status-volume
+              mountPath: /devops-learning/config
+        

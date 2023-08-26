@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  creationTimestamp: "2023-02-24T13:06:52Z"
+  generation: 1
+  name: fd
+  namespace: default
+  resourceVersion: "81416"
+  uid: 92a0474f-7b4c-441d-ae88-62fb35a1a280
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: demo1.localdev.me
+    http:
+      paths:
+      - backend:
+          service:
+            name: bank-interest
+            port:
+              number: 8000
+        path: /rates/
+        pathType: Prefix
+      - backend:
+          service:
+            name: fd-return
+            port:
+              number: 8100
+        path: /api
+        pathType: Prefix
+
+status:
+  loadBalancer: {}
