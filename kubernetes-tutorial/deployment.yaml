@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kube-deployment
+  name: kube-status-deployment
   labels:
     app: status
 spec:
@@ -14,18 +14,18 @@ spec:
       labels:
         app: status-pods
     spec:
-      volumes:
-        - name: status-volume
-          configMap:
-            name: college-configmap
       containers:
         - name: status-container
           image: kube-status:latest
           imagePullPolicy: Never   # this is done so that image is fetched locally
           env: 
           - name: SPRING_PROFILES_ACTIVE
-            value : "prod2"
-          volumeMounts:
-            - name: status-volume
-              mountPath: /devops-learning/config
+            value : "prod"
+          - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+            valueFrom:
+                configMapKeyRef:
+                    key: EUREKA_URL
+                    name: kube-status-configmap
+            
+            
         
