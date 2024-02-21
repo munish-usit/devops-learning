@@ -1,0 +1,15 @@
+apiVersion: v1
+data:
+  application-prod.properties: |2+
+
+    status.message=prod profile status check configmap
+
+    eureka.client.serviceUrl.defaultZone = http://svc-discovery.default.svc.cluster.local:8011/eureka
+
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2024-01-08T09:04:39Z"
+  name: kube-status
+  namespace: default
+  resourceVersion: "1658"
+  uid: 5db02b44-cb76-4f2a-b319-0e98b5ebbc35

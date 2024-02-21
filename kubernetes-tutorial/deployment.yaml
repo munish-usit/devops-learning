@@ -3,29 +3,30 @@ kind: Deployment
 metadata:
   name: kube-status-deployment
   labels:
-    app: status
+    app: kube-status
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: status-pods
+      app: kube-status
   template:
     metadata:
       labels:
-        app: status-pods
+        app: kube-status
     spec:
+      volumes:
+        - name: kube-status-volume
+          configMap:
+            name: kube-status
       containers:
-        - name: status-container
+        - name: kube-status-container
           image: kube-status:latest
           imagePullPolicy: Never   # this is done so that image is fetched locally
-          env: 
-          - name: SPRING_PROFILES_ACTIVE
-            value : "prod"
-          - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-            valueFrom:
-                configMapKeyRef:
-                    key: EUREKA_URL
-                    name: kube-status-configmap
-            
-            
+          args: ["--spring.config.additional-location=/devops-learning/config/"]
+          volumeMounts:
+            - name: kube-status-volume
+              mountPath: /devops-learning/config
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
         
